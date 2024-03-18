@@ -4,8 +4,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-    <com.example.sudoku.SudokuBoard
+    tools:context=".view.MainActivity">
+    <com.example.sudoku.view.custom.SudokuBoard
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/sudokuBoard"

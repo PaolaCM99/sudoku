@@ -1,4 +1,4 @@
-package com.example.sudoku
+package com.example.sudoku.view.custom
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -17,6 +17,9 @@ class SudokuBoard(context:Context, attributeSet: AttributeSet): View(context, at
     private var cellPixels = 0F
     private var row = 0
     private var col = 0
+
+    private var listener : OnTouchListener? = null
+
     private val thickLinePaint = Paint().apply {
         style = Paint.Style.STROKE
         color = Color.rgb(103, 80, 164)
@@ -33,6 +36,7 @@ class SudokuBoard(context:Context, attributeSet: AttributeSet): View(context, at
         style = Paint.Style.FILL_AND_STROKE
         color = Color.rgb(103, 80, 164)
     }
+
     private val problematicCellPainting = Paint().apply {
         style = Paint.Style.FILL_AND_STROKE
         color = Color.rgb(214, 179, 255)
@@ -71,11 +75,7 @@ class SudokuBoard(context:Context, attributeSet: AttributeSet): View(context, at
 
     private fun fillCell(canvas: Canvas, r: Int, c: Int, paint: Paint){
         canvas.drawRect(c * cellPixels, r * cellPixels, (c + 1) * cellPixels, (r + 1) * cellPixels, paint)
-
-
-
     }
-
 
     private fun drawLines(canvas: Canvas) {
         canvas.drawRect(0F, 0F, width.toFloat(), height.toFloat(), thickLinePaint)
@@ -105,20 +105,34 @@ class SudokuBoard(context:Context, attributeSet: AttributeSet): View(context, at
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         return when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                touchEvent(event.x, event.y)
+                handleTouchEvent(event.x, event.y)
                 true
             }
             else -> false
         }
     }
-private fun touchEvent (x : Float, y: Float){
-    row = (y / cellPixels).toInt()
-    col = (x / cellPixels).toInt()
-    invalidate()
+    private fun handleTouchEvent (x : Float, y: Float){
+        val possibleSelectedRow = (y / cellPixels).toInt()
+        val possibleSelectedCol = (x / cellPixels).toInt()
+        listener?.onCellTouch(possibleSelectedRow, possibleSelectedCol)
+        //invalidate()
 
-}
+    }
+    fun updateSelectedCellUI(selectRow: Int, selectCol:Int){
+        row = selectRow
+        col = selectCol
+        invalidate()
+    }
+
+    fun registerListener(listener: OnTouchListener){
+        this.listener = listener
+    }
+    interface OnTouchListener{
+        fun onCellTouch(row:Int, col:Int)
+    }
 
 }
