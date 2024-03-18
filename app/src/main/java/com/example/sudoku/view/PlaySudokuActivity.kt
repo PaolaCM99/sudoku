@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity(), SudokuBoard.OnTouchListener {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge() //NO ESTA EN EL VIDEO
         setContentView(R.layout.activity_main)
-
+        sudokuBoard = findViewById(R.id.sudokuBoard) // inicializar el board
         sudokuBoard.registerListener(this)
 
         //REVISAR ESTE BLOQUE DE CODIGO - NO ESTA EN EL VIDEO
