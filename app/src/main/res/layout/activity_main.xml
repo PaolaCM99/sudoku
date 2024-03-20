@@ -5,6 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.MainActivity">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sudoku"
+        android:textSize="69sp"
+        android:textAlignment="center"/>
     <com.example.sudoku.view.custom.SudokuBoard
         android:layout_width="match_parent"
         android:layout_height="match_parent"

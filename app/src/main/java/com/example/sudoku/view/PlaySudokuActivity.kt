@@ -9,12 +9,14 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.sudoku.R
+import com.example.sudoku.game.Cell
 import com.example.sudoku.view.custom.SudokuBoard
 
 class MainActivity : AppCompatActivity(), SudokuBoard.OnTouchListener {
 
     private lateinit var viewModel: SudokuViewModel
     private lateinit var sudokuBoard: SudokuBoard
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +34,19 @@ class MainActivity : AppCompatActivity(), SudokuBoard.OnTouchListener {
         //
         viewModel = ViewModelProvider(this).get(SudokuViewModel::class.java)
         viewModel.sudokuGame.selectedCellLiveData.observe(this, Observer { updateSelectedCellUI(it)})
+        viewModel.sudokuGame.cellLiveData.observe(this, Observer {updateCells(it) })
+
+        val buttons = listOf(oneBtn, twoBtn, threeBtn, fourBtn, fiveBtn, sixBtn, sevenBtn, eigthBtn, nineBtn) //RESOLVER VIDEO #4
+        buttons.forEachIndexed { index, button ->
+
+            button.setOnClickListener {
+                viewModel.sudokuGame.handleInput(index+1)
+            }
+        }
+    }
+
+    private fun updateCells(cells:List<Cell>?) = cells?.let{
+        sudokuBoard.updateCells(cells)
     }
 
     private fun updateSelectedCellUI(cell: Pair <Int, Int>) = cell.let {

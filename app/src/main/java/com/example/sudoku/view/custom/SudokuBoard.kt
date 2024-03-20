@@ -5,9 +5,11 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import com.example.sudoku.game.Cell
 import kotlin.math.min
 
 class SudokuBoard(context:Context, attributeSet: AttributeSet): View(context, attributeSet) {
@@ -20,16 +22,18 @@ class SudokuBoard(context:Context, attributeSet: AttributeSet): View(context, at
 
     private var listener : OnTouchListener? = null
 
+    private var cells: List<Cell>? = null
+
     private val thickLinePaint = Paint().apply {
         style = Paint.Style.STROKE
         color = Color.rgb(103, 80, 164)
-        strokeWidth = 6F
+        strokeWidth = 8F
     }
 
     private val thinLinePaint = Paint().apply {
         style = Paint.Style.STROKE
         color = Color.BLACK
-        strokeWidth = 2F
+        strokeWidth = 4F
     }
 
     private val selectCellPainting = Paint().apply {
@@ -38,8 +42,14 @@ class SudokuBoard(context:Context, attributeSet: AttributeSet): View(context, at
     }
 
     private val problematicCellPainting = Paint().apply {
-        style = Paint.Style.FILL_AND_STROKE
+        style = Paint.Style.STROKE
         color = Color.rgb(214, 179, 255)
+    }
+
+    private val textPaint = Paint().apply {
+        style = Paint.Style.FILL_AND_STROKE
+        color = Color.rgb(103, 80, 164)
+        textSize = 34F
     }
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -51,26 +61,22 @@ class SudokuBoard(context:Context, attributeSet: AttributeSet): View(context, at
         cellPixels = (width/size).toFloat()
         fillCells (canvas)
         drawLines(canvas)
-
+        drawText(canvas)
     }
     private fun fillCells(canvas: Canvas){
-        if (row == -1 || col == -1 ){
-        return
-        }
+        cells?.forEach {
+            val r = it.row
+            val c = it.col
 
-        for (r in 0..size){
-            for (c in 0..size){
-                if (r == row && c == col ){
-                    fillCell(canvas, r,c, selectCellPainting)
-                }else if ( r == row || c == col ){
+            if (r == row && c == col ){
+                fillCell(canvas, r,c, selectCellPainting)
+            }else if ( r == row || c == col ){
 
-                    fillCell(canvas, r, c, problematicCellPainting)
-                } else if (r / squareSize == row / squareSize && c / squareSize == col / squareSize){
-                    fillCell( canvas, r, c, problematicCellPainting)
-                }
+                fillCell(canvas, r, c, problematicCellPainting)
+            } else if (r / squareSize == row / squareSize && c / squareSize == col / squareSize){
+                fillCell( canvas, r, c, problematicCellPainting)
             }
         }
-
     }
 
     private fun fillCell(canvas: Canvas, r: Int, c: Int, paint: Paint){
@@ -104,6 +110,22 @@ class SudokuBoard(context:Context, attributeSet: AttributeSet): View(context, at
         }
     }
 
+    private fun drawText(canvas:Canvas){
+        cells?.forEach{
+            val row = it.row
+            val col = it.col
+            val valueString = it.value.toString()
+
+            val textBounds = Rect()
+            textPaint.getTextBounds(valueString, 0, valueString.length, textBounds)
+            val textWidth = textPaint.measureText(valueString)
+            val textHeight = textBounds.height()
+
+            canvas.drawText(valueString, (col * cellPixels) + cellPixels / 2 - textWidth / 2,
+                (row * cellPixels)+ cellPixels / 2 -textHeight/2, textPaint)
+
+        }
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -128,10 +150,25 @@ class SudokuBoard(context:Context, attributeSet: AttributeSet): View(context, at
         invalidate()
     }
 
+    fun updateCells(cells:List<Cell>){
+        this.cells = cells
+        invalidate()
+    }
+
     fun registerListener(listener: OnTouchListener){
         this.listener = listener
     }
     interface OnTouchListener{
+//        abstract val nineBtn: Any
+//        abstract val eigthBtn: Any
+//        abstract val sevenBtn: Any
+//        abstract val sixBtn: Any
+//        abstract val fiveBtn: Any
+//        abstract val fourBtn: Any
+//        abstract val threeBtn: Any
+//        abstract val twoBtn: Any
+//        abstract val oneBtn: Any
+
         fun onCellTouch(row:Int, col:Int)
     }
 
