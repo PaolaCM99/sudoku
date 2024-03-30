@@ -2,26 +2,26 @@ package com.example.sudoku.view
 
 import SudokuViewModel
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.sudoku.R
+import com.example.sudoku.databinding.LevelOneActivutyBinding
 import com.example.sudoku.game.Cell
 import com.example.sudoku.view.custom.SudokuBoard
 
-class MainActivity : AppCompatActivity(), SudokuBoard.OnTouchListener {
+class LevelOneActivity : AppCompatActivity(), SudokuBoard.OnTouchListener {
 
     private lateinit var viewModel: SudokuViewModel
     private lateinit var sudokuBoard: SudokuBoard
-
+    private lateinit var binding: LevelOneActivutyBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge() //NO ESTA EN EL VIDEO
-        setContentView(R.layout.activity_main)
+        binding = LevelOneActivutyBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         sudokuBoard = findViewById(R.id.sudokuBoard) // inicializar el board
         sudokuBoard.registerListener(this)
 
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity(), SudokuBoard.OnTouchListener {
         viewModel.sudokuGame.selectedCellLiveData.observe(this, Observer { updateSelectedCellUI(it)})
         viewModel.sudokuGame.cellLiveData.observe(this, Observer {updateCells(it) })
 
-        val buttons = listOf(oneBtn, twoBtn, threeBtn, fourBtn, fiveBtn, sixBtn, sevenBtn, eigthBtn, nineBtn) //RESOLVER VIDEO #4
+        val buttons = listOf(binding.oneBtn, binding.twoBtn, binding.threeBtn, binding.fourBtn, binding.fiveBtn, binding.sixBtn, binding.sevenBtn, binding.eightBtn, binding.nineBtn)
         buttons.forEachIndexed { index, button ->
 
             button.setOnClickListener {
