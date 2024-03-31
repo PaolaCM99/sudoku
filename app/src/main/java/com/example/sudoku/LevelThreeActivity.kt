@@ -30,7 +30,7 @@ class LevelThreeActivity : ComponentActivity() {
         sudokuBoard = generateSudokuBoard()
         backgroundMusic = MediaPlayer.create(this, R.raw.triforce)
         backgroundMusic.start()
-        var flag = false
+
 
         val sounds = arrayOf(
             MediaPlayer.create(this, R.raw.pedo1),
