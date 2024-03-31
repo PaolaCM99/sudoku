@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
@@ -28,27 +29,41 @@ class LevelTwoActivity : ComponentActivity() {
         setContentView(R.layout.level_two_activity)
         mainGridLayout = findViewById<GridLayout>(R.id.main_grid_layout)
         sudokuBoard = generateSudokuBoard()
+        val sounds = arrayOf(
+            MediaPlayer.create(this, R.raw.pedo1),
+            MediaPlayer.create(this, R.raw.pedo2),
+            MediaPlayer.create(this, R.raw.pedo3),
+            MediaPlayer.create(this, R.raw.pedo4),
+            MediaPlayer.create(this, R.raw.pedo5),
+            MediaPlayer.create(this, R.raw.pedo6),
+            MediaPlayer.create(this, R.raw.pedo7),
+            MediaPlayer.create(this, R.raw.pedo8),
+            MediaPlayer.create(this, R.raw.pedo9),
+            MediaPlayer.create(this, R.raw.pedo10),
+        )
+
         val recarge = findViewById<Button>(R.id.recarge);recarge.setOnClickListener { board() }
         val home = findViewById<Button>(R.id.mainMenu).setOnClickListener {
             val intent = Intent(this@LevelTwoActivity, MainMenuActivity::class.java)
             startActivity(intent)
         }
-        val one = findViewById<Button>(R.id.oneBtn).setOnClickListener { selectedCell?.text = "1" }
-        val two = findViewById<Button>(R.id.twoBtn).setOnClickListener { selectedCell?.text = "2" }
+        val one = findViewById<Button>(R.id.oneBtn).setOnClickListener { selectedCell?.text = "1" ; getRandomSound(sounds).start()}
+        val two = findViewById<Button>(R.id.twoBtn).setOnClickListener { selectedCell?.text = "2" ; getRandomSound(sounds).start()}
         val three =
-            findViewById<Button>(R.id.threeBtn).setOnClickListener { selectedCell?.text = "3" }
+            findViewById<Button>(R.id.threeBtn).setOnClickListener { selectedCell?.text = "3" ; getRandomSound(sounds).start()}
         val four =
-            findViewById<Button>(R.id.fourBtn).setOnClickListener { selectedCell?.text = "4" }
+            findViewById<Button>(R.id.fourBtn).setOnClickListener { selectedCell?.text = "4" ; getRandomSound(sounds).start()}
         val five =
-            findViewById<Button>(R.id.fiveBtn).setOnClickListener { selectedCell?.text = "5" }
-        val six = findViewById<Button>(R.id.sixBtn).setOnClickListener { selectedCell?.text = "6" }
+            findViewById<Button>(R.id.fiveBtn).setOnClickListener { selectedCell?.text = "5"; getRandomSound(sounds).start() }
+        val six = findViewById<Button>(R.id.sixBtn).setOnClickListener { selectedCell?.text = "6" ; getRandomSound(sounds).start()}
         val seven =
-            findViewById<Button>(R.id.sevenBtn).setOnClickListener { selectedCell?.text = "7" }
+            findViewById<Button>(R.id.sevenBtn).setOnClickListener { selectedCell?.text = "7" ; getRandomSound(sounds).start()}
         val eigth =
-            findViewById<Button>(R.id.eightBtn).setOnClickListener { selectedCell?.text = "8" }
+            findViewById<Button>(R.id.eightBtn).setOnClickListener { selectedCell?.text = "8" ; getRandomSound(sounds).start()}
         val nive =
-            findViewById<Button>(R.id.nineBtn).setOnClickListener { selectedCell?.text = "9" }
+            findViewById<Button>(R.id.nineBtn).setOnClickListener { selectedCell?.text = "9" ; getRandomSound(sounds).start()}
         val del = findViewById<Button>(R.id.eraseBtn).setOnClickListener { selectedCell?.text = "" }
+
         val checkButton = findViewById<Button>(R.id.finishBtn)
         val timer = findViewById<TextView>(R.id.timerTextView)
         checkButton.setOnClickListener {
@@ -261,5 +276,9 @@ class LevelTwoActivity : ComponentActivity() {
         }
     }
 
-
+    fun getRandomSound(sounds: Array<MediaPlayer>): MediaPlayer {
+        val random = Random
+        val index = random.nextInt(sounds.size)
+        return sounds[index]
+    }
 }

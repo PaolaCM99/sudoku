@@ -1,20 +1,19 @@
 package com.example.sudoku
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
-import android.util.AttributeSet
 import android.widget.Button
 import android.widget.GridLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import kotlin.random.Random
+import android.graphics.Color
 
 
 class LevelThreeActivity : ComponentActivity() {
@@ -22,24 +21,51 @@ class LevelThreeActivity : ComponentActivity() {
     private var lastSelectedButton: Button? = null
     private lateinit var mainGridLayout: GridLayout
     private lateinit var sudokuBoard: Array<IntArray>
-
+    private lateinit var backgroundMusic: MediaPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.level_three_activity)
         mainGridLayout = findViewById<GridLayout>(R.id.main_grid_layout)
         sudokuBoard = generateSudokuBoard()
+        backgroundMusic = MediaPlayer.create(this, R.raw.triforce)
+        backgroundMusic.start()
+        var flag = false
+
+        val sounds = arrayOf(
+            MediaPlayer.create(this, R.raw.pedo1),
+            MediaPlayer.create(this, R.raw.pedo2),
+            MediaPlayer.create(this, R.raw.pedo3),
+            MediaPlayer.create(this, R.raw.pedo4),
+            MediaPlayer.create(this, R.raw.pedo5),
+            MediaPlayer.create(this, R.raw.pedo6),
+            MediaPlayer.create(this, R.raw.pedo7),
+            MediaPlayer.create(this, R.raw.pedo8),
+            MediaPlayer.create(this, R.raw.pedo9),
+            MediaPlayer.create(this, R.raw.pedo10),
+        )
         val recarge = findViewById<Button>(R.id.recarge);recarge.setOnClickListener { board() }
         val home = findViewById<Button>(R.id.mainMenu).setOnClickListener {
+            if (backgroundMusic.isPlaying) {
+                backgroundMusic.stop()
+            }
             val intent = Intent(this@LevelThreeActivity, MainMenuActivity::class.java)
             startActivity(intent)
         }
-        val one = findViewById<Button>(R.id.oneBtn).setOnClickListener { selectedCell?.text = "1" }
-        val two = findViewById<Button>(R.id.twoBtn).setOnClickListener { selectedCell?.text = "2" }
+        val one = findViewById<Button>(R.id.oneBtn).setOnClickListener {
+            selectedCell?.text = "1"; getRandomSound(sounds).start()
+        }
+        val two = findViewById<Button>(R.id.twoBtn).setOnClickListener {
+            selectedCell?.text = "2"; getRandomSound(sounds).start()
+        }
         val three =
-            findViewById<Button>(R.id.threeBtn).setOnClickListener { selectedCell?.text = "3" }
+            findViewById<Button>(R.id.threeBtn).setOnClickListener {
+                selectedCell?.text = "3"; getRandomSound(sounds).start()
+            }
         val four =
-            findViewById<Button>(R.id.fourBtn).setOnClickListener { selectedCell?.text = "4" }
+            findViewById<Button>(R.id.fourBtn).setOnClickListener {
+                selectedCell?.text = "4"; getRandomSound(sounds).start()
+            }
         val del = findViewById<Button>(R.id.eraseBtn).setOnClickListener { selectedCell?.text = "" }
         val checkButton = findViewById<Button>(R.id.finishBtn)
         val timer = findViewById<TextView>(R.id.timerTextView)
@@ -65,14 +91,10 @@ class LevelThreeActivity : ComponentActivity() {
                                     } else {
                                         R.drawable.blueborder
                                     }
-                                // Cambia el borde a wrongborder
                                 button.setBackgroundResource(R.drawable.wrongborder)
-
-                                // Crea un nuevo Handler y usa postDelayed para retrasar la ejecución del bloque de código
                                 Handler(Looper.getMainLooper()).postDelayed({
-                                    // Cambia el borde de vuelta al borde original después de 2 segundos
                                     button.setBackgroundResource(originalBorder)
-                                }, 2000) // Retraso de 2 segundos
+                                }, 2000)
                             }
                         }
                     }
@@ -85,37 +107,92 @@ class LevelThreeActivity : ComponentActivity() {
                 builder.setTitle("¡Felicidades!")
                 builder.setMessage("¡Has ganado!")
                 builder.setPositiveButton("OK") { dialog, which ->
-                    // Redirigir al usuario a MainMenuActivity
+                    if (backgroundMusic.isPlaying) {
+                        backgroundMusic.stop()
+                    }
                     val intent = Intent(this, MainMenuActivity::class.java)
                     startActivity(intent)
                 }
                 builder.show()
             }
         }
-        val countDownTimer = object : CountDownTimer(60000, 1000) {
-            @SuppressLint("SetTextI18n")
+        val timerWrapper = mutableListOf<CountDownTimer>()
+
+        timerWrapper.add(object : CountDownTimer(15200, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                // Actualizar el TextView cada segundo
                 timer.text = "Tiempo: ${millisUntilFinished / 1000}"
             }
 
             override fun onFinish() {
-                // Mostrar el AlertDialog cuando el tiempo llegue a 0
-                val builder = AlertDialog.Builder(this@LevelThreeActivity)
-                builder.setTitle("Tiempo agotado")
-                builder.setMessage("El juego ha terminado, serás redirigido al menú principal.")
-                builder.setPositiveButton("Aceptar") { _, _ ->
-                    // Redirigir al usuario a MainMenuActivity
-                    val intent = Intent(this@LevelThreeActivity, MainMenuActivity::class.java)
-                    startActivity(intent)
+                val main =
+                    findViewById<RelativeLayout>(R.id.main); main.setBackgroundResource(R.drawable.dubstepgreenborder)
+                val timer =
+                    findViewById<TextView>(R.id.timerTextView); timer.setTextColor(Color.WHITE)
+                val handler = Handler(Looper.getMainLooper())
+                val runnable = object : Runnable {
+                    var toggle = true
+                    override fun run() {
+                        for (rowIndex in 0 until mainGridLayout.rowCount) {
+                            for (colIndex in 0 until mainGridLayout.columnCount) {
+                                val childGridLayout =
+                                    mainGridLayout.getChildAt(rowIndex * mainGridLayout.columnCount + colIndex) as GridLayout
+                                for (childRowIndex in 0 until childGridLayout.rowCount) {
+                                    for (childColIndex in 0 until childGridLayout.columnCount) {
+                                        val button =
+                                            childGridLayout.getChildAt(childRowIndex * childGridLayout.columnCount + childColIndex) as? Button
+                                        if (toggle) {
+                                            button?.setBackgroundResource(R.drawable.dubstepblueborder)
+                                        } else {
+                                            button?.setBackgroundResource(R.drawable.dubstepbluewhiteborder)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        toggle = !toggle // Cambia el estado del interruptor
+                        handler.postDelayed(
+                            this,
+                            800
+                        ) // Ejecuta este bloque de código cada 800 milisegundos
+                    }
                 }
-                builder.show()
+                handler.post(runnable)
+
+                timerWrapper[0] = object : CountDownTimer(170000, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        timer.text = "Tiempo: ${millisUntilFinished / 1000}"
+                    }
+
+                    override fun onFinish() {
+                        val builder = AlertDialog.Builder(this@LevelThreeActivity)
+                        builder.setTitle("Tiempo agotado")
+                        builder.setMessage("El juego ha terminado, serás redirigido al menú principal.")
+                        builder.setPositiveButton("Aceptar") { _, _ ->
+                            if (backgroundMusic.isPlaying) {
+                                backgroundMusic.stop()
+                            }
+                            val intent =
+                                Intent(this@LevelThreeActivity, MainMenuActivity::class.java)
+                            startActivity(intent)
+                        }
+                        builder.show()
+
+
+                    }
+                }
+                timerWrapper[0].start()
             }
-        }
-        countDownTimer.start()
-
-
+        })
+        timerWrapper[0].start()
         board()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (backgroundMusic.isPlaying) {
+            backgroundMusic.stop()
+        }
+        backgroundMusic.release()
     }
 
     private fun board() {
@@ -250,5 +327,10 @@ class LevelThreeActivity : ComponentActivity() {
         }
     }
 
+    fun getRandomSound(sounds: Array<MediaPlayer>): MediaPlayer {
+        val random = Random
+        val index = random.nextInt(sounds.size)
+        return sounds[index]
+    }
 
 }
