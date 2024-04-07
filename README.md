@@ -54,3 +54,8 @@ Nota: Se generarán números iniciales o pistas para llenar el rompecabezas.
 · Indicar por sonido cada número que se agregue al tablero (0.5 puntos)
 
 · Generar tres niveles ya sea por tiempo o por jugadas. Adicionalmente, si el jugador no completa, indicar que pierde el nivel y vuelve a empezar. (1 punto)
+
+## IU
+
+![image](https://github.com/PaolaCM99/sudoku/assets/78281125/e9ba4f16-3d6d-448e-b4e8-d7cefd96264b)
+
