@@ -62,7 +62,10 @@
             android:layout_height="wrap_content"
             android:layout_row="1"
             android:layout_column="1"
-            android:text="Del"
+            android:background="#9485F2"
+            android:foreground="@android:drawable/ic_input_delete"
+            android:foregroundGravity="center"
+            android:foregroundTint="@color/white"
             android:textSize="24sp"
             android:textStyle="italic" />
 
@@ -313,6 +316,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:fontFamily="monospace"
         android:padding="8dp"
         android:text="00:00:00"
         android:textColor="@color/black"
@@ -323,7 +327,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:text="🔃" />
+        android:background="#9485F2"
+        android:foreground="@android:drawable/ic_popup_sync"
+        android:foregroundGravity="center" />
 
 
 </RelativeLayout>
